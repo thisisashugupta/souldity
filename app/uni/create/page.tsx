@@ -7,6 +7,8 @@ type HexString = `0x${string}`;
 
 const factoryABI = SBTokenFactory.abi;
 const factoryContract : HexString = `0x${SBTokenFactory.networks[11155111].address}`;
+// 0x2DDE1632f75258329877c29398Ba29331d6a42C4
+console.log(factoryContract, typeof factoryContract);
 
 const CreateUni = () => {
 
@@ -21,9 +23,9 @@ const CreateUni = () => {
     const { address, isConnected, isConnecting, isDisconnected } = useAccount();
 
     console.log("usePrepareContractWrite");
-    console.log(factoryContract);
-    console.log(factoryABI);
-    console.log(args);
+    console.log("factoryContract", factoryContract);
+    console.log("factoryABI", factoryABI);
+    console.log("args",args);
 
     const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
         address: factoryContract,
@@ -43,21 +45,16 @@ const CreateUni = () => {
     console.log(config);
     console.log("useContractWrite");
 
-    const { data, error, isError, isLoading, isSuccess, write, status } = useContractWrite(config);
+    const { data, isLoading, isError, error, write, isSuccess, status } = useContractWrite(config);
 
     if (isError) {
         console.log("error in useContractWrite");
         console.log(error);
     };
 
-    console.log("isSuccess");
-    console.log(isSuccess);
-    console.log("data");
-    console.log(data);
-    console.log("error");
-    console.log(error);
-    console.log("status");
-    console.log(status);
+    console.log("data, isLoading, isError, write, status");
+    console.log(data, isLoading, isError, write, status);
+    console.log("useWaitForTransaction");
 
     const {
         data: txnData,
