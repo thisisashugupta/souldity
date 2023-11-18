@@ -1,13 +1,14 @@
 "use client";
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 export default function Navbar() {
   const { address, connector, isConnected } = useAccount();
   const [displayAddress, setDisplayAddress] = useState<string | undefined>(
-    undefined,
+    undefined
   );
 
   useEffect(() => {
@@ -15,9 +16,13 @@ export default function Navbar() {
   }, [address]);
 
   return (
-    <div>
-      <div><a href="/">Soulbound Identity</a></div>
-      <div><ConnectButton /></div>
+    <div className="flex flex-wrap justify-between p-8 ">
+      <div>
+        <Link className="font-bold text-xl" href="/">Soulbound Identity</Link>
+      </div>
+      <div>
+        <ConnectButton />
+      </div>
     </div>
   );
 }
