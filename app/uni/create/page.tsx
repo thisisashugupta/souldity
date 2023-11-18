@@ -6,7 +6,8 @@ function CreateUni() {
 
     const [name, setName] = useState<string>("");
     const [address, setAddress] = useState<string>("");
-    const [num_students, setNum_students] = useState<string>("");
+    const [tokenName, setTokenName] = useState<string>("");
+    const [tokenSymbol, setTokenSymbol] = useState<string>("");
 
     function createUNI() {
         console.log("createUNI");
@@ -22,24 +23,20 @@ function CreateUni() {
             <div className='flex-col align-center justify-center p-5'>
                 <form onSubmit={createUNI}>
                 <div className='flex justify-between'>
-                    <label htmlFor="UniName">Name</label>
+                    <label htmlFor="UniName">Uni Name</label>
                     <input className='border border-gray-300' type="text" name='UniName' onChange={(e) => setName(e.target.value)} />
                 </div>
                 <div className='flex justify-between'>
-                    <label htmlFor="UniAddress">Address</label>
+                    <label htmlFor="UniAddress">Uni Address</label>
                     <input className='border border-gray-300' type="text" name='UniAddress' onChange={(e) => setAddress(e.target.value)} />
                 </div>
                 <div className='flex justify-between'>
-                    <label htmlFor="UniStudents">Number of students</label>
-                    <input className='border border-gray-300' type="text" name='UniStudents' onChange={(e) => setNum_students(e.target.value)} />
+                    <label htmlFor="TokenName">Token Name</label>
+                    <input className='border border-gray-300' type="text" name='TokenName' onChange={(e) => setTokenName(e.target.value)} />
                 </div>
                 <div className='flex justify-between'>
-                    <label htmlFor="UniName">University Name</label>
-                    <input className='border border-gray-300' type="text" name='UniName' />
-                </div>
-                <div className='flex justify-between'>
-                    <label htmlFor="UniName">University Name</label>
-                    <input className='border border-gray-300' type="text" name='UniName' />
+                    <label htmlFor="TokenSymbol">Token Symbol</label>
+                    <input className='border border-gray-300' type="text" name='TokenSymbol' onChange={(e) => setTokenSymbol(e.target.value)} />
                 </div>
                 <div><button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type='submit'>Click Me</button></div>
                 </form>
@@ -49,3 +46,10 @@ function CreateUni() {
 }
 
 export default CreateUni
+
+// function createUniToken(
+//         string memory name,
+//         string memory symbol,
+//         string memory uniName,
+//         string memory uniAddress
+//     )

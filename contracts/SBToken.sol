@@ -4,7 +4,7 @@
 // address1 0x3db6e8f35Ff731415B7647eCe5936A74Ee75fAF5
 // address2 0x83778Fa6B0836E804e95334dE7056B7d7BB9ED91
 
-// LNM Student Token, LNMS , LNMIIT , "Rupa ki Nangal, Post-Sumel, Via-Jamdoli, Jaipur-302031, (Rajasthan) INDIA"
+// token3. TKN3, uniname, uniaddress
 
 // 0x3db6e8f35Ff731415B7647eCe5936A74Ee75fAF5 , ipfs://bafkreic6ov4qo4ucd4g4uuyve4h72nc4y2lg7ugtq3n3vxnfp3lojvtmdu , 2202221 , TEST NAME 2 ,  CSE , 27012011 , 2022
 // 0x83778Fa6B0836E804e95334dE7056B7d7BB9ED91 , ipfs://bafkreic6ov4qo4ucd4g4uuyve4h72nc4y2lg7ugtq3n3vxnfp3lojvtmdu , 2303110 , TEST NAME 3 ,  CCE , 29092012 , 2023
