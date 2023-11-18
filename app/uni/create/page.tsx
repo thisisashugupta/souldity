@@ -17,48 +17,87 @@ const CreateUni = () => {
     const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
     const [args, setArgs] = useState<[string, string, string, string]>(['','','','']);
 
-    const { address, isConnected, isConnecting, isDisconnected } = useAccount()
+    const { chain, chains } = useNetwork();
+    const { address, isConnected, isConnecting, isDisconnected } = useAccount();
+
+    console.log("usePrepareContractWrite");
+    console.log(factoryContract);
+    console.log(factoryABI);
+    console.log(args);
+
+    const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
+        address: factoryContract,
+        abi: factoryABI,
+        enabled: isReadyToSubmit,
+        functionName: 'createUniToken',
+        chainId: chain?.id,
+        args
+    });
+
+    if (isPrepareError) {
+        console.log("error in usePrepareContractWrite");
+        console.log(prepareError);
+    };
+
+    console.log("config");
+    console.log(config);
+    console.log("useContractWrite");
+
+    const { data, error, isError, isLoading, isSuccess, write, status } = useContractWrite(config);
+
+    if (isError) {
+        console.log("error in useContractWrite");
+        console.log(error);
+    };
+
+    console.log("isSuccess");
+    console.log(isSuccess);
+    console.log("data");
+    console.log(data);
+    console.log("error");
+    console.log(error);
+    console.log("status");
+    console.log(status);
+
+    const {
+        data: txnData,
+        isLoading: isContractLoading,
+        isSuccess: writeSuccess,
+    } = useWaitForTransaction({
+        hash: data?.hash,
+    })
+
+    if (isLoading) return <div>Processing…</div>
+    if (isError) return <div>Transaction error</div>
+    // return <div>Transaction: {JSON.stringify(data)}</div>
+    console.log(JSON.stringify(data));
+    
+
+
+    console.log("end");    
+
+    function handleSubmit () {
+        setIsReadyToSubmit(true);
+    }
+
+    function createUniToken() {
+
+        // write
+        
+    }
 
     React.useEffect(() => {
         setArgs([tokenName, tokenSymbol, uniName, uniAddress]);
+        setIsReadyToSubmit(true);
     }, [tokenName, tokenSymbol, uniName, uniAddress]);
 
     React.useEffect(() => {
         if(!isReadyToSubmit) return;
-         createUniToken();
+        createUniToken();
     }, [isReadyToSubmit]);
 
-
-    function createUniToken() {
-
-        console.log("createUniToken");
-
-        const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
-            address: factoryContract,
-            abi: factoryABI,
-            enabled: isReadyToSubmit,
-            functionName: 'createUniToken',
-            args
-        });
-
-        if (isPrepareError) {
-            console.log("error in usePrepareContractWrite");
-            console.log(prepareError);
-        };
-
-        const { data, error, isError,  isLoading, isSuccess, write, status } = useContractWrite({
-            address: factoryContract,
-            abi: factoryABI,
-            functionName: 'createUniToken',
-            account: address,
-            args
-        });
-
-
-
-    }
-
     if (!isConnected) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to wallet</main>);
+    if (chain?.id !== 11155111) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to Sepolia</main>);
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -68,22 +107,22 @@ const CreateUni = () => {
                 </p>
             </div>
             <div className='flex-col align-center justify-center p-5'>
-                <form onSubmit={() => setIsReadyToSubmit(true)}>
+                <form onSubmit={handleSubmit}>
                 <div className='flex justify-between'>
                     <label htmlFor="UniName">Uni Name</label>
-                    <input className='border border-gray-300' type="text" name='UniName' onChange={(e) => setUniName(e.target.value)} />
+                    <input className='border border-gray-300' type="text" name='UniName' onChange={(e) => setUniName(e.target.value)} placeholder='LNMIIT'/>
                 </div>
                 <div className='flex justify-between'>
                     <label htmlFor="UniAddress">Uni Address</label>
-                    <input className='border border-gray-300' type="text" name='UniAddress' onChange={(e) => setUniAddress(e.target.value)} />
+                    <input className='border border-gray-300' type="text" name='UniAddress' onChange={(e) => setUniAddress(e.target.value)} placeholder='Rupa Ki Nangal, Post Sumel'/>
                 </div>
                 <div className='flex justify-between'>
                     <label htmlFor="TokenName">Token Name</label>
-                    <input className='border border-gray-300' type="text" name='TokenName' onChange={(e) => setTokenName(e.target.value)} />
+                    <input className='border border-gray-300' type="text" name='TokenName' onChange={(e) => setTokenName(e.target.value)} placeholder='LNM Student Token'/>
                 </div>
                 <div className='flex justify-between'>
                     <label htmlFor="TokenSymbol">Token Symbol</label>
-                    <input className='border border-gray-300' type="text" name='TokenSymbol' onChange={(e) => setTokenSymbol(e.target.value)} />
+                    <input className='border border-gray-300' type="text" name='TokenSymbol' onChange={(e) => setTokenSymbol(e.target.value)} placeholder='LNMST' />
                 </div>
                 <div><button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type='submit'>Submit</button></div>
                 </form>
@@ -93,10 +132,3 @@ const CreateUni = () => {
 }
 
 export default CreateUni
-
-// function createUniToken(
-//         string memory name,
-//         string memory symbol,
-//         string memory uniName,
-//         string memory uniAddress
-//     )
