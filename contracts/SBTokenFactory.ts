@@ -1,4 +1,4 @@
-{
+const SBTokenFactory = {
     "contractName": "SBTokenFactory",
     "ownerAddress":"0x5E3Adbd57a310243f89A25B17d4BaC02bD78Bb3F",
     "abi": [
@@ -222,15 +222,17 @@
         }
     ],
     "networks": {
-      "1": {
-        "address": "0x123abc...",
-        "transactionHash": "0x456def..."
-      },
-      "11155111": {
-        "network": "sepolia",
-        "contractAddress": "0x2DDE1632f75258329877c29398Ba29331d6a42C4",
-        "transactionHash": "0xe5b28256f76f715149742ee1222e307c4053a52c523f0160a85d2f818825c6dc"
-      }
+        "1": {
+            "address": "0x123abc...",
+            "transactionHash": "0x456def..."
+        },
+        "11155111": {
+            "network": "sepolia",
+            "address": "0x2DDE1632f75258329877c29398Ba29331d6a42C4",
+            "transactionHash": "0xe5b28256f76f715149742ee1222e307c4053a52c523f0160a85d2f818825c6dc"
+        }
+      
     }
-  }
-  
+  };
+
+  export default SBTokenFactory;

@@ -1,4 +1,4 @@
-{
+export const SBToken = {
     "contractName": "SBToken",
 	"abi": [
 		{
