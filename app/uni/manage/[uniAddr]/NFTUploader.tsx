@@ -6,7 +6,12 @@ const NFT_STORAGE_API="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRo
 
 const NFT_STORAGE_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API!;
 
-const NFTUploader: React.FC = () => {
+interface NFTUploaderProps {
+  stuUri: string;
+  setStuUri: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const NFTUploader: React.FC<NFTUploaderProps> = ({stuUri, setStuUri}) => {
   const [image, setImage] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
@@ -44,6 +49,9 @@ const NFTUploader: React.FC = () => {
       
       const result = await storeNFT(image, name, description);
       setUploadResult(result);
+      console.log("Upload Result", result);
+      console.log(result.url);
+      setStuUri(result.url);
     } catch (error) {
       console.error('Error uploading NFT:', error);
       alert('Error uploading NFT. Please try again.');
