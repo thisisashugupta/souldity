@@ -73,7 +73,8 @@ const CreateUni = () => {
 
     console.log("end");    
 
-    function handleSubmit () {
+    function handleSubmit (e : React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
         setIsReadyToSubmit(true);
     }
 
@@ -104,7 +105,7 @@ const CreateUni = () => {
                 </p>
             </div>
             <div className='flex-col align-center justify-center p-5'>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={(e) => handleSubmit(e)}>
                 <div className='flex justify-between'>
                     <label htmlFor="UniName">Uni Name</label>
                     <input className='border border-gray-300' type="text" name='UniName' onChange={(e) => setUniName(e.target.value)} placeholder='LNMIIT'/>
