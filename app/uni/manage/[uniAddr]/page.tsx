@@ -1,51 +1,124 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import NFTUploader from "./NFTUploader";
+import React, { useState, useEffect } from 'react'
+import NFTUploader from './NFTUploader'
+import { SBToken } from '@/contracts/SBToken'
+import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+type HexString = `0x${string}`;
+
+const contractABI = SBToken.abi;
+const SBTcontract : HexString = `0x${SBToken.networks[11155111].address}`;
 
 export default function UniPage({ params }: { params: { uniAddr: string } }) {
   const uniTokenAddr = params.uniAddr;
+  // const uniTokenAddr = SBTcontract;
 
   // state
-  const [stuEthAddress, setStuEthAddress] = useState("");
-  const [stuId, setStuId] = useState("");
-  const [stuUri, setStuUri] = useState("");
-  const [stuName, setStuName] = useState("");
-  const [stuBranch, setStuBranch] = useState("");
-  const [stuBirthDate, setStuBirthDate] = useState("");
-  const [stuYearOfAdmission, setStuYearOfAdmission] = useState("");
-  const [ipfsUrl, setIpfsUrl] = useState(null);
+  
+  const [txnSuccess, setTxnSuccess] = useState<any>(null);
+  const [ stuEthAddress, setStuEthAddress ] = useState("");
+  const [ stuId, setStuId ] = useState("");
+  const [ stuUri, setStuUri ] = useState("");
+  const [ stuName, setStuName ] = useState("");
+  const [ stuBranch, setStuBranch ] = useState("");
+  const [ stuBirthDate, setStuBirthDate ] = useState("");
+  const [ stuYearOfAdmission, setStuYearOfAdmission ] = useState("");
   const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
   const [args, setArgs] = useState<any>([]);
 
-  useEffect(() => {
-    setArgs([
-      stuEthAddress,
-      stuUri,
-      stuId,
-      stuName,
-      stuBranch,
-      stuBirthDate,
-      stuYearOfAdmission,
-    ]);
-  }, [
-    stuEthAddress,
-    stuId,
-    stuUri,
-    stuName,
-    stuBranch,
-    stuBirthDate,
-    stuYearOfAdmission,
-  ]);
+  const { chain } = useNetwork();
+  const { address, isConnected } = useAccount();
 
-  useEffect(() => {}, [isReadyToSubmit]);
+  console.log("start");
+
+
+
+  const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
+    address: uniTokenAddr,
+    abi: contractABI,
+    enabled: isReadyToSubmit,
+    functionName: 'safeMint',
+    chainId: chain?.id,
+    account: address,
+    args
+  });
+
+  if (isPrepareError) {
+    console.warn(`error in usePrepareContractWrite`);
+    console.error(prepareError);
+  };
+
+  console.log(config);
+  
+
+
+
+  const { data, isLoading, isError, error, write, isSuccess, status } = useContractWrite(config);
+
+  if (isError) {
+      console.warn("error in useContractWrite");
+      console.error(error);
+  };
+
+
+
+  const {
+    data: txnData,
+    isLoading: isContractLoading,
+    isSuccess: writeSuccess,
+  } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+// console.log(`data: ${txnData}, isLoading: ${isContractLoading}, isSuccess: ${writeSuccess}`);
+console.log(` Transaction: ${JSON.stringify(data)}`);
+console.log("end");
+  
+  useEffect(() => {
+    setArgs([stuEthAddress, stuUri, stuId, stuName, stuBranch, stuBirthDate, stuYearOfAdmission]);
+    setIsReadyToSubmit(true);
+  }, [stuEthAddress, stuId, stuUri, stuName, stuBranch, stuBirthDate, stuYearOfAdmission]);
+
+  useEffect(() => {
+    if (writeSuccess) {
+        console.log(`Returned Data on write success`, data)
+        setTxnSuccess(`Success, Transaction submited successfully`);
+        console.log({
+            title: 'Success',
+            description: 'Transaction submited successfully',
+            status: 'success',
+            duration: 9000,
+            isClosable: true,
+        })
+    }
+   }, [writeSuccess, data]);
 
   // global functions
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    console.log("handleSubmit");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    try {
+        console.log('Sending TX')
+        console.log(args)
+        console.log(write);
+        if (!!write) {
+            console.log("writing");
+            await write?.()
+            console.log("written");
+        }
+    } catch (error) {
+        console.error(error);
+        console.log({
+            title: 'Error',
+            description: 'There was an error while writing txn',
+            status: 'error',
+            isClosable: true,
+        });
+    }
   }
+
+  if (!isConnected) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to wallet</main>);
+  if (chain?.id !== 11155111) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to Sepolia</main>);
 
   // return jsx
 

@@ -1,111 +1,123 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import SBTokenFactory from "@/contracts/SBTokenFactory";
-import {
-  useAccount,
-  useContractWrite,
-  useNetwork,
-  usePrepareContractWrite,
-  useWaitForTransaction,
-} from "wagmi";
+import React, { useState, useEffect } from 'react'
+import SBTokenFactory from '@/contracts/SBTokenFactory'
+import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+
 type HexString = `0x${string}`;
 
 const factoryABI = SBTokenFactory.abi;
 const factoryContract: HexString = `0x${SBTokenFactory.networks[11155111].address}`;
 // 0x2DDE1632f75258329877c29398Ba29331d6a42C4
-console.log(factoryContract, typeof factoryContract);
+// console.log(factoryContract, typeof factoryContract);
 
 const CreateUni = () => {
-  const [uniName, setUniName] = useState<string>("");
-  const [uniAddress, setUniAddress] = useState<string>("");
-  const [tokenName, setTokenName] = useState<string>("");
-  const [tokenSymbol, setTokenSymbol] = useState<string>("");
-  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
-  const [args, setArgs] = useState<[string, string, string, string]>([
-    "",
-    "",
-    "",
-    "",
-  ]);
+    const [txnSuccess, setTxnSuccess] = useState<any>(null);
+    const [uniName, setUniName] = useState<string>("");
+    const [uniAddress, setUniAddress] = useState<string>("");
+    const [tokenName, setTokenName] = useState<string>("");
+    const [tokenSymbol, setTokenSymbol] = useState<string>("");
+    const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
+    const [args, setArgs] = useState<[string, string, string, string]>(['','','','']);
 
-  const { chain, chains } = useNetwork();
-  const { address, isConnected, isConnecting, isDisconnected } = useAccount();
+    const { chain } = useNetwork();
+    const { isConnected } = useAccount();
 
-  console.log("usePrepareContractWrite");
-  console.log("factoryContract", factoryContract);
-  console.log("factoryABI", factoryABI);
-  console.log("args", args);
+    console.log("start");
+    // console.log("args",args);
+    // console.log("usePrepareContractWrite");
+    // console.log("factoryContract", factoryContract);
+    // console.log("factoryABI", factoryABI);
 
-  const {
-    config,
-    error: prepareError,
-    isError: isPrepareError,
-  } = usePrepareContractWrite({
-    address: factoryContract,
-    abi: factoryABI,
-    enabled: isReadyToSubmit,
-    functionName: "createUniToken",
-    chainId: chain?.id,
-    args,
-  });
+    const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
+        address: factoryContract,
+        abi: factoryABI,
+        enabled: isReadyToSubmit,
+        functionName: 'createUniToken',
+        chainId: chain?.id,
+        args
+    });
 
-  if (isPrepareError) {
-    console.log("error in usePrepareContractWrite");
-    console.log(prepareError);
-  }
+    if (isPrepareError) {
+        console.warn(`error in usePrepareContractWrite`);
+        console.error(prepareError);
+    };
 
-  console.log("config");
-  console.log(config);
-  console.log("useContractWrite");
+    // console.log(`config ${config}`);
+    // console.log("useContractWrite");
 
-  const { data, isLoading, isError, error, write, isSuccess, status } =
-    useContractWrite(config);
+    const { data, isLoading, isError, error, write, isSuccess, status } = useContractWrite(config);
 
-  if (isError) {
-    console.log("error in useContractWrite");
-    console.log(error);
-  }
+    if (isError) {
+        console.warn("error in useContractWrite");
+        console.error(error);
+    };
 
-  console.log("data, isLoading, isError, write, status");
-  console.log(data, isLoading, isError, write, status);
-  console.log("useWaitForTransaction");
+    // console.log(`data ${data}, isLoading: ${isLoading}, write ${write}`);
+    // console.log("useWaitForTransaction");
 
-  const {
-    data: txnData,
-    isLoading: isContractLoading,
-    isSuccess: writeSuccess,
-  } = useWaitForTransaction({
-    hash: data?.hash,
-  });
+    const {
+        data: txnData,
+        isLoading: isContractLoading,
+        isSuccess: writeSuccess,
+    } = useWaitForTransaction({
+        hash: data?.hash,
+    })
 
-  if (isLoading) return <div>Processing…</div>;
-  if (isError) return <div>Transaction error</div>;
-  // return <div>Transaction: {JSON.stringify(data)}</div>
-  console.log(JSON.stringify(data));
+    // console.log(`data: ${txnData}, isLoading: ${isContractLoading}, isSuccess: ${writeSuccess}`);
+    console.log(` Transaction: ${JSON.stringify(data)}`);
 
-  console.log("end");
+    console.log("end");
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setIsReadyToSubmit(true);
-  }
 
-  function createUniToken() {
-    // write
-  }
+    useEffect(() => {
+        setArgs([tokenName, tokenSymbol, uniName, uniAddress]);
+        if (tokenName === "") return;
+        if (tokenSymbol === "") return;
+        if (uniName === "") return;
+        if (uniAddress === "") return;
+        setIsReadyToSubmit(true);
+    }, [tokenName, tokenSymbol, uniName, uniAddress]);
 
-  React.useEffect(() => {
-    setArgs([tokenName, tokenSymbol, uniName, uniAddress]);
-    setIsReadyToSubmit(true);
-  }, [tokenName, tokenSymbol, uniName, uniAddress]);
+    useEffect(() => {
+        if (writeSuccess) {
+            console.log(`Returned Data on write success`, data)
+            setTxnSuccess(`Success, Transaction submited successfully`);
+            console.log({
+                title: 'Success',
+                description: 'Transaction submited successfully',
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+            })
+        }
+       }, [writeSuccess, data]);
 
-  React.useEffect(() => {
-    if (!isReadyToSubmit) return;
-    createUniToken();
-  }, [isReadyToSubmit]);
 
-  if (!isConnected)
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        try {
+            console.log('Sending TX')
+            console.log(args)
+            if (!!write) {
+                console.log("writing");
+                await write?.()
+                console.log("written");
+            }
+        } catch (error) {
+            console.error(error);
+            console.log({
+                title: 'Error',
+                description: 'There was an error while writing txn',
+                status: 'error',
+                isClosable: true,
+            });
+        }
+   }
+
+    if (!isConnected) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to wallet</main>);
+    if (chain?.id !== 11155111) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to Sepolia</main>);
+  
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         Connect to wallet
@@ -147,8 +159,12 @@ const CreateUni = () => {
                 placeholder="LNMIIT"
               />
             </div>
-          </div>
-
+            <div>
+                {txnSuccess && <>{`${txnSuccess}`}</>}
+            </div>
+        </main>
+    )
+}
           <div className="md:flex md:items-center mb-4">
             <div className="md:w-1/3">
               <label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="UniAddress">Uni Address</label>
