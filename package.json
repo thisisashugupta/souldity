@@ -12,6 +12,7 @@
     "@openzeppelin/contracts": "^4.7.0",
     "@rainbow-me/rainbowkit": "^1.2.0",
     "next": "14.0.0",
+    "nft.storage": "^7.1.1",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7",
