@@ -656,7 +656,7 @@ export const SBToken = {
 		},
 		"11155111": {
 		  "network": "sepolia",
-		  "address":"0x2DDE1632f75258329877c29398Ba29331d6a42C4",
+		  "address":"0x1c28a279ddb303cf001703abc92701aad35f6571",
 		  "transactionHash": ""
 		}
 	}
