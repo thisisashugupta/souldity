@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import SBTokenFactory from '@/contracts/SBTokenFactory'
 import { useContractRead } from 'wagmi'
+import NFTUploader from './NFTUploader';
 type HexString = `0x${string}`;
 
 const factoryABI = SBTokenFactory.abi;
@@ -69,6 +70,9 @@ export default function UniPage({ params }: { params: { uniAddr: string } }) {
   // return jsx
 
   return (<>
+  <div>
+  <NFTUploader />
+  </div>
   <div>University ID: {params.uniAddr}</div>
   <div>UniToken Address: <span className='font-semibold'>{`${uniTokenAddress}`}</span></div>
   <div>
