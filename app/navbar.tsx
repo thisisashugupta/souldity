@@ -16,7 +16,7 @@ export default function Navbar() {
   }, [address]);
 
   return (
-    <div className="flex flex-wrap justify-between p-8 ">
+    <div className="flex flex-wrap justify-between p-10 ">
       <div>
         <Link className="font-bold text-xl" href="/">Soulbound Identity</Link>
       </div>
