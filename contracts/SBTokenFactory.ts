@@ -228,7 +228,7 @@ const SBTokenFactory = {
         },
         "11155111": {
             "network": "sepolia",
-            "address": "0x6BfC24EC5a6d48401a75629d5af7B707A3AF3224",
+            "address": "6BfC24EC5a6d48401a75629d5af7B707A3AF3224",
             "transactionHash": "0xd66e134187e6c99cf4de3412a3292a1d8d1f65f06578a6506cd8f21d01e4e352"
         }
       
