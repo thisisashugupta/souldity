@@ -1,34 +1,47 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
+import SBTokenFactory from '@/contracts/SBTokenFactory'
+import { useContractRead } from 'wagmi'
 import { redirect } from 'next/navigation'
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+type HexString = `0x${string}`;
 
+const factoryABI = SBTokenFactory.abi;
+const factoryContract : HexString = `0x${SBTokenFactory.networks[11155111].address}`;
 // 0x2DDE1632f75258329877c29398Ba29331d6a42C4
 
 const ManageUni = () => {
 
     const [uniId, setUniId] = useState<number>(0);
-    // const [uniTokenAddress, setUniTokenAddress] = useState<string>("some-uni-token-address");
     const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
-    
-    useEffect(() => {
-        console.log("uniId:", uniId);
-    }, [uniId])
+    // const [uniTokenAddr, setUniTokenAddr] = useState<string>("some-uni-token-address");
 
-    const { chain, chains } = useNetwork();
-    const { address, isConnected, isConnecting, isDisconnected } = useAccount();
+    const { chain } = useNetwork();
+    const { isConnected } = useAccount();
+    
+    // useContractRead
+    const { data: uniTokenAddress, isError, isLoading } = useContractRead({
+        address: factoryContract,
+        abi: factoryABI,
+        functionName: 'uniIdToAddress',
+        args: [uniId],
+    });
+
+    if (isError && isLoading) console.log("error");
+    console.log(`data ${uniTokenAddress}, isError ${isError}, isLoading ${isLoading}`);
+
+    useEffect(() => {
+        if(!isReadyToSubmit) return;
+        // redirect to /uni/manage/uniTokenAddress
+        // setUniTokenAddr(uniTokenAddress);
+        redirect(`/uni/manage/${uniTokenAddress}`);
+    }, [isReadyToSubmit]);
 
     function handleSubmit (e : React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setIsReadyToSubmit(true);
     }
-
-    useEffect(() => {
-        if(!isReadyToSubmit) return;
-        // redirect to /uni/manage/uniTokenAddress
-        redirect(`/uni/manage/${uniId}`);
-    }, [isReadyToSubmit]);
 
     if (!isConnected) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to wallet</main>);
     if (chain?.id !== 11155111) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to Sepolia</main>);
