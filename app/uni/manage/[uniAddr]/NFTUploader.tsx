@@ -1,8 +1,9 @@
-import React, { useState, ChangeEvent } from 'react';
-import Image from 'next/image'
-import { NFTStorage, File } from 'nft.storage';
+import React, { useState, ChangeEvent } from "react";
+import Image from "next/image";
+import { NFTStorage, File } from "nft.storage";
 
-const NFT_STORAGE_API="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRFYkJlMjI2NjkzNjYzMjdlOEEwOTYzMDFEMUE0NTI2MzcxRGZmQjEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwMDM3OTUxMTcyOCwibmFtZSI6ImRpZ25pdHktdjIifQ.sY5Hn62PJ72kM11BEqU40Mi_8iXPnf0bxzHDWNkyrYU"
+const NFT_STORAGE_API =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRFYkJlMjI2NjkzNjYzMjdlOEEwOTYzMDFEMUE0NTI2MzcxRGZmQjEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwMDM3OTUxMTcyOCwibmFtZSI6ImRpZ25pdHktdjIifQ.sY5Hn62PJ72kM11BEqU40Mi_8iXPnf0bxzHDWNkyrYU";
 
 const NFT_STORAGE_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API!;
 
@@ -11,11 +12,11 @@ interface NFTUploaderProps {
   setStuUri: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const NFTUploader: React.FC<NFTUploaderProps> = ({stuUri, setStuUri}) => {
+const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
   const [image, setImage] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [name, setName] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
+  const [name, setName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [uploadResult, setUploadResult] = useState<any | null>(null);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,21 +41,21 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({stuUri, setStuUri}) => {
 
   const handleUpload = async () => {
     if (!image || !name || !description) {
-      alert('Please fill in all fields.');
+      alert("Please fill in all fields.");
       return;
     }
 
     try {
       console.log("image", image);
-      
+
       const result = await storeNFT(image, name, description);
       setUploadResult(result);
       console.log("Upload Result", result);
       console.log(result.url);
       setStuUri(result.url);
     } catch (error) {
-      console.error('Error uploading NFT:', error);
-      alert('Error uploading NFT. Please try again.');
+      console.error("Error uploading NFT:", error);
+      alert("Error uploading NFT. Please try again.");
     }
   };
 

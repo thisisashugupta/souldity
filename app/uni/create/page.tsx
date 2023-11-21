@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react'
 import SBTokenFactory from '@/contracts/SBTokenFactory'
 import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+
 type HexString = `0x${string}`;
 
 const factoryABI = SBTokenFactory.abi;
-const factoryContract : HexString = `0x${SBTokenFactory.networks[11155111].address}`;
+const factoryContract: HexString = `0x${SBTokenFactory.networks[11155111].address}`;
 // 0x2DDE1632f75258329877c29398Ba29331d6a42C4
 // console.log(factoryContract, typeof factoryContract);
 
 const CreateUni = () => {
-
     const [txnSuccess, setTxnSuccess] = useState<any>(null);
     const [uniName, setUniName] = useState<string>("");
     const [uniAddress, setUniAddress] = useState<string>("");
@@ -117,7 +117,13 @@ const CreateUni = () => {
 
     if (!isConnected) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to wallet</main>);
     if (chain?.id !== 11155111) return (<main className="flex min-h-screen flex-col items-center justify-between p-24">Connect to Sepolia</main>);
-
+  
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        Connect to wallet
+      </main>
+    );
+  if (chain?.id !== 11155111)
     return (
         <main className="flex flex-col items-center justify-center p-12">
           <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex mb-10 md:mb-16">
@@ -205,4 +211,4 @@ const CreateUni = () => {
       );
     };
     
-    export default CreateUni;
+export default CreateUni;

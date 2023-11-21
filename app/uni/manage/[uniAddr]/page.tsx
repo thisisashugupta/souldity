@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from 'react'
 import NFTUploader from './NFTUploader'
@@ -10,11 +10,12 @@ const contractABI = SBToken.abi;
 const SBTcontract : HexString = `0x${SBToken.networks[11155111].address}`;
 
 export default function UniPage({ params }: { params: { uniAddr: string } }) {
-
+  
   // const uniTokenAddr = params.uniAddr;
   const uniTokenAddr = SBTcontract;
-
+  
   // state
+  
   const [txnSuccess, setTxnSuccess] = useState<any>(null);
   const [ stuEthAddress, setStuEthAddress ] = useState("");
   const [ stuId, setStuId ] = useState("");
