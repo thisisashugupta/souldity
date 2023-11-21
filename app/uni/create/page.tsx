@@ -125,99 +125,90 @@ const CreateUni = () => {
     );
   if (chain?.id !== 11155111)
     return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        Connect to Sepolia
-      </main>
-    );
-
-  return (
-    <main className="flex flex-col items-center justify-center p-12">
-      <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex mb-10 md:mb-16">
-        <p className="text-3xl font-bold flex w-full justify-center p-5 bg-gray-200 dark:bg-zinc-800/30">
-          CreateUni
-        </p>
-      </div>
-      <div className="flex-col align-center justify-center p-5">
-        <form className="w-full " onSubmit={(e) => handleSubmit(e)}>
-
-
-          <div className="md:flex md:items-center mb-4">
-            <div className="md:w-1/3">
-              <label
-                className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                htmlFor="UniName"
-              >
-                Uni Name
-              </label>
-            </div>
-            <div className="md:w-2/3">
-              <input
-                className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                type="text"
-                name="UniName"
-                onChange={(e) => setUniName(e.target.value)}
-                placeholder="LNMIIT"
-              />
-            </div>
-            <div>
-                {txnSuccess && <>{`${txnSuccess}`}</>}
-            </div>
+        <main className="flex flex-col items-center justify-center p-12">
+          <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex mb-10 md:mb-16">
+            <p className="text-3xl font-bold flex w-full justify-center p-5 bg-gray-200 dark:bg-zinc-800/30">
+              CreateUni
+            </p>
+          </div>
+          <div className="flex-col align-center justify-center p-5">
+            <form className="w-full " onSubmit={(e) => handleSubmit(e)}>
+    
+    
+              <div className="md:flex md:items-center mb-4">
+                <div className="md:w-1/3">
+                  <label
+                    className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
+                    htmlFor="UniName"
+                  >
+                    Uni Name
+                  </label>
+                </div>
+                <div className="md:w-2/3">
+                  <input
+                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    type="text"
+                    name="UniName"
+                    onChange={(e) => setUniName(e.target.value)}
+                    placeholder="LNMIIT"
+                  />
+                </div>
+              </div>
+    
+              <div className="md:flex md:items-center mb-4">
+                <div className="md:w-1/3">
+                  <label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="UniAddress">Uni Address</label>
+                </div>
+                <div className="md:w-2/3" >
+                  <input
+                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                    type="text"
+                    name="UniAddress"
+                    onChange={(e) => setUniAddress(e.target.value)}
+                    placeholder="Rupa Ki Nangal, Post Sumel"
+                  />
+                </div>
+              </div>
+    
+              <div className="md:flex md:items-center mb-4">
+                <div className="md:w-1/3"><label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="TokenName">Token Name</label></div>
+                <div className="md:w-2/3"><input
+                  className="appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  type="text"
+                  name="TokenName"
+                  onChange={(e) => setTokenName(e.target.value)}
+                  placeholder="LNM Student Token"
+                /></div>
+                
+              </div>
+    
+              <div className="md:flex md:items-center mb-4">
+                <div className="md:w-1/3"> <label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="TokenSymbol">Token Symbol</label> </div>
+                <div className="md:w-2/3"><input
+                  className="appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  type="text"
+                  name="TokenSymbol"
+                  onChange={(e) => setTokenSymbol(e.target.value)}
+                  placeholder="LNMST"
+                /></div>
+                
+              </div>
+    
+              <div className="md:flex md:items-center">
+              <div className="md:w-1/3"></div>
+              <div className="md:w-2/3"><button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  type="submit"
+                >
+                  Submit
+                </button></div>
+                
+              </div>
+            </form>
+          </div>
+          <div>{txnSuccess && <>{`${txnSuccess}`}</>}</div>
         </main>
-    )
-}
-          <div className="md:flex md:items-center mb-4">
-            <div className="md:w-1/3">
-              <label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="UniAddress">Uni Address</label>
-            </div>
-            <div className="md:w-2/3" >
-              <input
-                className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                type="text"
-                name="UniAddress"
-                onChange={(e) => setUniAddress(e.target.value)}
-                placeholder="Rupa Ki Nangal, Post Sumel"
-              />
-            </div>
-          </div>
-
-          <div className="md:flex md:items-center mb-4">
-            <div className="md:w-1/3"><label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="TokenName">Token Name</label></div>
-            <div className="md:w-2/3"><input
-              className="appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              type="text"
-              name="TokenName"
-              onChange={(e) => setTokenName(e.target.value)}
-              placeholder="LNM Student Token"
-            /></div>
-            
-          </div>
-
-          <div className="md:flex md:items-center mb-4">
-            <div className="md:w-1/3"> <label className="text-lg block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4" htmlFor="TokenSymbol">Token Symbol</label> </div>
-            <div className="md:w-2/3"><input
-              className="appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-              type="text"
-              name="TokenSymbol"
-              onChange={(e) => setTokenSymbol(e.target.value)}
-              placeholder="LNMST"
-            /></div>
-            
-          </div>
-
-          <div className="md:flex md:items-center">
-          <div className="md:w-1/3"></div>
-          <div className="md:w-2/3"><button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              type="submit"
-            >
-              Submit
-            </button></div>
-            
-          </div>
-        </form>
-      </div>
-    </main>
-  );
-};
-
+      );
+    };
+    
 export default CreateUni;

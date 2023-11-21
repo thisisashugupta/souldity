@@ -10,9 +10,10 @@ const contractABI = SBToken.abi;
 const SBTcontract : HexString = `0x${SBToken.networks[11155111].address}`;
 
 export default function UniPage({ params }: { params: { uniAddr: string } }) {
-  const uniTokenAddr = params.uniAddr;
-  // const uniTokenAddr = SBTcontract;
-
+  
+  // const uniTokenAddr = params.uniAddr;
+  const uniTokenAddr = SBTcontract;
+  
   // state
   
   const [txnSuccess, setTxnSuccess] = useState<any>(null);
@@ -263,6 +264,7 @@ console.log("end");
             </form>
           </div>
         </div>
+        <div>{txnSuccess && <>{`${txnSuccess}`}</>}</div>
       </div>
     </>
   );

@@ -143,12 +143,12 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
           Upload NFT
         </button>
       </div>
-      <div>
+      <div className='mt-8 mb-0'>
         {imageUrl && (
           <Image
             src={imageUrl}
-            width={500}
-            height={500}
+            width={300}
+            height={300}
             alt="Picture of the author"
           />
         )}

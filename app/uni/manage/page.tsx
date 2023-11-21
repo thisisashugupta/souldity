@@ -59,8 +59,8 @@ const ManageUni = () => {
                 </div>
                 <form onSubmit={(e) => handleSubmit(e)}>
                     <div className='flex justify-between p-2'>
-                        <label htmlFor="uni-id">University Id</label>
-                        <input className='border border-gray-300' type="text" name="uni-id" onChange={(e) => setUniId(e.target.value)}/>
+                        <label className='text-xl' htmlFor="uni-id">University Id</label>
+                        <input className='border border-gray-300 p-2 rounded-md' type="text" name="uni-id" onChange={(e) => setUniId(e.target.value)}/>
                     </div>
                     <div className='flex justify-center p-2'>
                         <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type='submit'>Submit</button>
@@ -71,4 +71,4 @@ const ManageUni = () => {
     )
 }
 
-export default ManageUni
+export default ManageUni;
