@@ -6,10 +6,7 @@ Unlocking a new era of verifiable academic achievements and lifelong learning.
 
 Souldity is a platform that empowers universities to harness the power of Soulbound Tokens (SBTs) to:
 
-- Issue tamper-proof digital credentials: Issue verifiable degrees, certificates, and badges that students can proudly showcase and carry with them throughout their careers.
-- Foster community and lifelong learning: Create a robust network of alumni and lifelong learners, fostering connections, collaboration, and mentorship.
-- Enable personalized learning pathways: Track student progress, identify skills and interests, and recommend tailored learning opportunities.
-- Empower decentralized governance: Facilitate community-driven decision-making and participatory governance within educational institutions.
+- Issue tamper-proof digital credentials: Issue verifiable degrees and certificates that students can proudly showcase and carry with them throughout their careers.
 
 ## Features
 
