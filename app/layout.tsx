@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Web3Provider from "@/providers/Web3Provider";
 import Navbar from "@/components/layout/navbar";
+import Footer from "@/components/layout/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,6 +27,7 @@ export default function RootLayout({
               <div className="h-[4.5rem] w-full"/>
               {children}
             </main>
+            <Footer />
           </Web3Provider>
         </body>
       </html>
