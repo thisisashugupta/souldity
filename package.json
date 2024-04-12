@@ -6,16 +6,22 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "copy-env": "cp .env.example .env.local",
     "lint": "next lint"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.0",
+    "@radix-ui/react-icons": "^1.3.0",
     "@rainbow-me/rainbowkit": "^1.2.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
     "next": "14.0.0",
     "nft.storage": "^7.1.1",
     "react": "^18",
     "react-dom": "^18",
     "recoil": "^0.7.7",
+    "tailwind-merge": "^2.2.2",
+    "tailwindcss-animate": "^1.0.7",
     "viem": "^1.19.3",
     "wagmi": "^1.4.7",
     "web3": "^4.2.1"

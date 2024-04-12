@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import '@rainbow-me/rainbowkit/styles.css';
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
@@ -17,7 +17,7 @@ import { publicProvider } from 'wagmi/providers/public';
   );
   
   const { connectors } = getDefaultWallets({
-    appName: 'My RainbowKit App',
+    appName: 'Souldity',
     projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT!,
     chains
   });
@@ -28,9 +28,9 @@ import { publicProvider } from 'wagmi/providers/public';
     publicClient
   })
 
-  export default function web3Provider({ children }: { children: React.ReactNode }) {
-    const [mounted, setMounted] = React.useState(false);
-    React.useEffect(() => setMounted(true), []);
+  export default function Web3Provider({ children }: { children: ReactNode }) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
     return (
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider chains={chains}>

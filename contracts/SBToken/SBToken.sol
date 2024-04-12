@@ -1,23 +1,13 @@
-// Try using this as URI ipfs://bafkreic6ov4qo4ucd4g4uuyve4h72nc4y2lg7ugtq3n3vxnfp3lojvtmdu
-
-// owner 0x0c093868DAC0514B99e4d4CfB0880ee5Fa5A711B
-// address1 0x3db6e8f35Ff731415B7647eCe5936A74Ee75fAF5
-// address2 0x83778Fa6B0836E804e95334dE7056B7d7BB9ED91
-
-// LNM Student Token, LNMS , LNMIIT , "Rupa ki Nangal, Post-Sumel, Via-Jamdoli, Jaipur-302031, (Rajasthan) INDIA"
-
-// 0x3db6e8f35Ff731415B7647eCe5936A74Ee75fAF5 , ipfs://bafkreic6ov4qo4ucd4g4uuyve4h72nc4y2lg7ugtq3n3vxnfp3lojvtmdu , 2202221 , TEST NAME 2 ,  CSE , 27012011 , 2022
-// 0x83778Fa6B0836E804e95334dE7056B7d7BB9ED91 , ipfs://bafkreic6ov4qo4ucd4g4uuyve4h72nc4y2lg7ugtq3n3vxnfp3lojvtmdu , 2303110 , TEST NAME 3 ,  CCE , 29092012 , 2023
-
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts@4.7.0/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts@4.7.0/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts@4.7.0/access/Ownable.sol";
 import "@openzeppelin/contracts@4.7.0/utils/Counters.sol";
 
-contract SBToken is ERC721, ERC721URIStorage, Ownable {
+contract SBToken is ERC721, ERC721URIStorage {
+
+    address owner;
 
     using Counters for Counters.Counter;
 
@@ -44,10 +34,17 @@ contract SBToken is ERC721, ERC721URIStorage, Ownable {
     University public uni;
     Student[] private students;
 
-    constructor(string memory name, string memory symbol, string memory _uni_name, string memory _uni_address) ERC721(name, symbol) {
+    constructor(
+        address deployer,
+        string memory name, 
+        string memory symbol, 
+        string memory _uni_name, 
+        string memory _uni_address
+    ) ERC721(name, symbol) {
         uni.uni_name = _uni_name;
         uni.uni_address = _uni_address;
-        uni.uni_owner = msg.sender;
+        uni.uni_owner = deployer;
+        owner = deployer;
     }
 
     function safeMint(
@@ -144,5 +141,10 @@ contract SBToken is ERC721, ERC721URIStorage, Ownable {
     // Function to get details of all students
     function getAllStudents() public onlyOwner view returns (Student[] memory) {
         return students;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "caller is not the owner");
+        _;
     }
 }

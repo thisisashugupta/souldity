@@ -2,9 +2,6 @@ import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { NFTStorage, File } from "nft.storage";
 
-const NFT_STORAGE_API =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDRFYkJlMjI2NjkzNjYzMjdlOEEwOTYzMDFEMUE0NTI2MzcxRGZmQjEiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTcwMDM3OTUxMTcyOCwibmFtZSI6ImRpZ25pdHktdjIifQ.sY5Hn62PJ72kM11BEqU40Mi_8iXPnf0bxzHDWNkyrYU";
-
 const NFT_STORAGE_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API!;
 
 interface NFTUploaderProps {
@@ -84,7 +81,6 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
         </p>
       </div>
 
-      {/* for the streets */}
       <div className="flex flex-col mx-3 mb-6 align-center items-center">
         <div className="w-full md:w-1/2 px-3 mb-6 md:mb-4">
           <label
