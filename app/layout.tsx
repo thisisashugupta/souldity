@@ -4,6 +4,8 @@ import "./globals.css";
 import Web3Provider from "@/providers/Web3Provider";
 import Navbar from "@/components/layout/navbar";
 import Footer from "@/components/layout/footer";
+// import { Toaster } from 'sonner'
+import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +23,10 @@ export default function RootLayout({
     <head className="bg-[#fff]">
       <html lang="en">
         <body className={inter.className}>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+          />
           <Web3Provider>
             <Navbar />
             <main className="min-h-screen min-w-screen flex flex-col items-center justify-start">

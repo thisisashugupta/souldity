@@ -2,15 +2,14 @@
 
 import React from 'react'
 import { Heading } from '@/components/ui/heading'
-import { useAccount, useNetwork } from 'wagmi'
+import { useAccount } from 'wagmi'
 import UniPage from './UniPage'
 
 export default function Page({ params }: { params: { uniAddr: string } }) {
 
   const uniAddr = params.uniAddr;
 
-  const { chain } = useNetwork();
-  const { isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
+  const { chain, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
 
   if (isDisconnected) return (<Heading>Connect your Wallet to Continue</Heading>);
   if (isConnecting) return (<Heading>Connecting...</Heading>);

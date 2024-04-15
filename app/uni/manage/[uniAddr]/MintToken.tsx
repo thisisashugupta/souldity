@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { abi } from '@/contracts/SBToken/SBToken.abi'
 import { HexString } from '@/types/basic'
-import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { 
+  useAccount, 
+  useWriteContract, 
+  useSimulateContract, 
+  useWaitForTransactionReceipt 
+} from 'wagmi'
 
 export default function MintToken({uniTokenAddr, stuUri}: { uniTokenAddr: string, stuUri: string }) {
   
@@ -15,50 +20,36 @@ export default function MintToken({uniTokenAddr, stuUri}: { uniTokenAddr: string
   const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
   const [args, setArgs] = useState<any>([]);
 
+  const [txnHash, setTxnHash] = useState<string | null>(null);
   const [txnSuccess, setTxnSuccess] = useState<any>(null);
 
-  const { chain } = useNetwork();
-  const { address } = useAccount();
+  const { chain, address } = useAccount();
 
   console.log("start");
 
 
 
-  const { config, error: prepareError, isError: isPrepareError } = usePrepareContractWrite({
+  const { data, error: prepareError, isError: isPrepareError } = useSimulateContract({
     address: uniTokenAddr as HexString,
     abi,
-    enabled: isReadyToSubmit,
     functionName: 'safeMint',
     chainId: chain?.id,
     account: address,
     args
   });
 
-  if (isPrepareError) {
-    console.warn(`error in usePrepareContractWrite`);
-    console.error(prepareError);
-  };
-
-  console.log(config);
+  console.log(data);
   
 
-
-
-  const { data, isLoading, isError, error, write, isSuccess, status } = useContractWrite(config);
-
-  if (isError) {
-      console.warn("error in useContractWrite");
-      console.error(error);
-  };
-
-
+  const { writeContract } = useWriteContract();
 
   const {
     data: txnData,
     isLoading: isContractLoading,
     isSuccess: writeSuccess,
-  } = useWaitForTransaction({
-    hash: data?.hash,
+  } = useWaitForTransactionReceipt({
+    hash: txnHash as `0x${string}`,
+    confirmations: 1
   })
 
 // console.log(`data: ${txnData}, isLoading: ${isContractLoading}, isSuccess: ${writeSuccess}`);
@@ -89,22 +80,11 @@ console.log("end");
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-        console.log('Sending TX')
         console.log(args)
-        console.log(write);
-        if (!!write) {
-            console.log("writing");
-            await write?.()
-            console.log("written");
-        }
+        writeContract(data!.request)
     } catch (error) {
         console.error(error);
-        console.log({
-            title: 'Error',
-            description: 'There was an error while writing txn',
-            status: 'error',
-            isClosable: true,
-        });
+        console.log('There was an error while writing txn');
     }
   }
 

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect,  } from 'react'
 import { Input } from '@/components/ui/input'
 
 type InputFormProps = {
@@ -10,9 +10,7 @@ type InputFormProps = {
 }
 
 export default function InputForm({isReadyToSubmit, setIsReadyToSubmit, setArgs}: InputFormProps) {
-
-  console.log("InputForm rendered");
-    
+  
     const [uniName, setUniName] = useState<string>("");
     const [uniAddress, setUniAddress] = useState<string>("");
     const [tokenName, setTokenName] = useState<string>("");

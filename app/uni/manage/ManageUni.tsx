@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import SBTokenFactory from '@/contracts/SBTokenFactory/SBTokenFactory'
-import { useContractRead } from 'wagmi'
+import { useReadContract } from 'wagmi'
 import { redirect } from 'next/navigation'
 import { HexString } from '@/types/basic'
 import { Heading } from '@/components/ui/heading'
@@ -19,7 +19,7 @@ const ManageUni = () => {
     // const [uniTokenAddr, setUniTokenAddr] = useState<string>("some-uni-token-address");
 
 
-    const { data: uniTokenAddress, isError, isLoading } = useContractRead({
+    const { data: uniTokenAddress, isError, isLoading } = useReadContract({
         address: factoryContract,
         abi: factoryABI,
         functionName: 'uniIdToAddress',

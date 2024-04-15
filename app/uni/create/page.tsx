@@ -3,12 +3,11 @@
 import React from 'react'
 import CreateUni from './CreateUni'
 import { Heading } from '@/components/ui/heading'
-import { useAccount, useNetwork } from 'wagmi'
+import { useAccount } from 'wagmi'
 
 export default function Page() {
 
-  const { chain } = useNetwork();
-  const { isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
+  const { chain, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
 
   if (isDisconnected) return (<Heading>Connect your Wallet to Continue</Heading>);
   if (isConnecting) return (<Heading>Connecting...</Heading>);

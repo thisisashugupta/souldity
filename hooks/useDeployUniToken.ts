@@ -1,134 +1,69 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import { HexString } from '@/types/basic'
 import SBTokenFactory from '@/contracts/SBTokenFactory/SBTokenFactory'
 import { 
-    useNetwork, 
-    usePrepareContractWrite, 
-    useContractWrite, 
-    useWaitForTransaction 
+    useAccount, 
+    useSimulateContract, 
+    useWriteContract, 
+    useWaitForTransactionReceipt 
 } from 'wagmi'
 
 const factoryABI = SBTokenFactory.abi;
 const factoryContract = SBTokenFactory.networks[11155111].address as HexString;
 
 type UseDeployUniTokenProps = {
-    isReadyToSubmit: boolean, 
     args: [string, string, string, string]
 }
 
-export function useDeployUniToken({isReadyToSubmit, args}: UseDeployUniTokenProps) {
-    console.log("useDeployUniToken rendered");
+export function useDeployUniToken({args}: UseDeployUniTokenProps) {
 
-    const { chain } = useNetwork();
-    const [txnSuccess, setTxnSuccess] = useState<string | null>(null);
+    const { chain } = useAccount();
+    const [txnHash, setTxnHash] = useState<string | null>(null);
 
-    const { 
-      config, 
-      error: prepareError, 
-      isError: isPrepareError 
-    } = usePrepareContractWrite({
+    const { data } = useSimulateContract({
       address: factoryContract,
       abi: factoryABI,
-      enabled: isReadyToSubmit,
       functionName: 'createSBToken',
       chainId: chain?.id,
       args
     });
-
-    // console.log({
-    //     usePrepareContractWrite: 'usePrepareContractWrite',
-    //     config: config,
-    //     prepareError: prepareError,
-    //     isPrepareError: isPrepareError
-    // });
-
-    if (isPrepareError) {
-        console.warn(`error in usePrepareContractWrite`);
-        console.error(prepareError);
-    };
     
-
-    const { 
-      data, 
-      isLoading, 
-      isError, 
-      error, 
-      write, 
-      isSuccess, 
-      status 
-    } = useContractWrite(config);
-
-    // console.log({
-    //   contractWrite: 'contractWrite',
-    //   data: data,
-    //   isLoading: isLoading,
-    //   isError: isError,
-    //   error: error, 
-    //   write: write,
-    //   isSuccess: isSuccess,
-    //   status: status    
-    // });
-
-    if (isError) {
-        console.warn("error in useContractWrite");
-        console.error(error);
-    };
-
-
+    const { writeContract } = useWriteContract()
 
     const {
-      data: txnData,
-      isLoading: isContractLoading,
-      isSuccess: writeSuccess,
-    } = useWaitForTransaction({
-      hash: data?.hash,
+      data: txnWaitData,
+      isLoading: isContractWaitLoading,
+      isSuccess: isContractWaitSuccess,
+    } = useWaitForTransactionReceipt({
+      hash: txnHash as HexString, 
+      confirmations: 1
     })
-
-    // console.log({
-    //   waitForTransaction: 'WaitForTransaction',
-    //   data: txnData,
-    //   isLoading: isContractLoading,
-    //   isSuccess: writeSuccess,
-    // });
-    
-    console.log(`Transaction: ${JSON.stringify(txnData)}`);
-
-
-    useEffect(() => {
-      if (writeSuccess) {
-        console.log(`Returned Data on write success`, txnData)
-        setTxnSuccess(`Success, Transaction submited successfully`);
-        console.log({
-          title: 'Success',
-          description: 'Transaction submited successfully',
-          status: 'success',
-          duration: 9000,
-          isClosable: true,
-        })
-      }
-    }, [writeSuccess, txnData]);
-
 
     const handleSubmit = useCallback(
         async (e: React.FormEvent) => {
             e.preventDefault()
             try {
-                await write?.()
+                writeContract(data!.request, { 
+                  onSuccess: (txHash) => setTxnHash(txHash), 
+                  onError: (error) => console.log('Error in submitting tx:', error)
+                })
             } catch (error) {
                 console.error(error);
-                console.log({
-                    title: 'Error',
-                    description: 'There was an error while writing txn',
-                    status: 'error',
-                });
+                console.log('There was an error while writing txn');
             }
         }, 
-        [write]
+        [writeContract, data]
     )
     
     
-    return { handleSubmit, txnData, isContractLoading, writeSuccess, txnSuccess };
+    return { 
+      handleSubmit, 
+      isContractWaitLoading, 
+      isContractWaitSuccess, 
+      txnHash,
+      txnWaitData
+    };
     
 };
