@@ -7,6 +7,7 @@ export default function UniPage({ uniTokenAddr }: { uniTokenAddr: string }) {
   
     const [stuUri, setStuUri] = useState<string>("");
     // TODO: check if uni owner is connected, else show a message
+    // TODO: fetch uniTokenAddr token details from blockchain
   
     return (
       <div>
