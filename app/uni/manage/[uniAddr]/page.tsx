@@ -3,7 +3,7 @@
 import React from 'react'
 import { Heading } from '@/components/ui/heading'
 import { useAccount } from 'wagmi'
-import UniPage from './UniPage'
+import ManageUniPage from './UniPage'
 
 export default function Page({ params }: { params: { uniAddr: string } }) {
 
@@ -21,5 +21,5 @@ export default function Page({ params }: { params: { uniAddr: string } }) {
   // CHECK IF ADDRESS IS VALID ADDRESS
   // IF NOT THEN SHOW A MESSAGE
 
-  return (isConnected && <UniPage uniTokenAddr={uniAddr} />);
+  return (isConnected && <ManageUniPage uniTokenAddr={uniAddr} />);
 };

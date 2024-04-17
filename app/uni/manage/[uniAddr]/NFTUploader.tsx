@@ -1,6 +1,10 @@
 import React, { useState, ChangeEvent } from "react";
 import Image from "next/image";
 import { NFTStorage, File } from "nft.storage";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Heading } from "@/components/ui/heading";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const NFT_STORAGE_KEY = process.env.NEXT_PUBLIC_NFT_STORAGE_API!;
 
@@ -9,12 +13,27 @@ interface NFTUploaderProps {
   setStuUri: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
+type UploadStateType = { 
+  uploading: boolean, 
+  uploaded: boolean, 
+  uploadButtonText: string 
+}
+
+const NFTUploader: React.FC<NFTUploaderProps> = ({ 
+  stuUri, 
+  setStuUri 
+}) => {
   const [image, setImage] = useState<any>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [uploadResult, setUploadResult] = useState<any | null>(null);
+
+  const [uploadState, setUploadState] = useState<UploadStateType>({ 
+    uploading: false, 
+    uploaded: false, 
+    uploadButtonText: "Upload NFT" 
+  });
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -43,6 +62,11 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
     }
 
     try {
+      setUploadState((prev) => ({
+        ...prev,
+        uploading: true,
+        uploadButtonText: "Uploading..."
+      }))
       console.log("image", image);
 
       const result = await storeNFT(image, name, description);
@@ -52,7 +76,18 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
       setStuUri(result.url);
     } catch (error) {
       console.error("Error uploading NFT:", error);
+      setUploadState((prev) => ({
+        uploading: false,
+        uploaded: false,
+        uploadButtonText: "Error Uploading"
+      }))
       alert("Error uploading NFT. Please try again.");
+    } finally {
+      setUploadState((prev) => ({
+        uploading: false,
+        uploaded: true,
+        uploadButtonText: "Uploaded"
+      }))
     }
   };
 
@@ -73,89 +108,113 @@ const NFTUploader: React.FC<NFTUploaderProps> = ({ stuUri, setStuUri }) => {
     return new File([content], image.name, { type });
   };
 
+
+
+  
   return (
-    <div className="flex flex-col items-center justify-center p-12">
-      <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex mb-10 md:mb-8">
-        <p className="text-3xl font-bold flex w-full justify-center p-5 dark:bg-zinc-800/30">
-          NFT Uploader
-        </p>
+    <div className="flex flex-col items-center">
+
+      {/* Heading */}
+      <Heading>Upload Student Image</Heading>
+
+      {/* Image to be uploaded */}
+      <div className="m-4">
+      {imageUrl && (
+        <Image
+          className=" rounded-lg"
+          src={imageUrl}
+          width={300}
+          height={300}
+          alt="Picture of the author"
+        />
+      )}
       </div>
 
-      <div className="flex flex-col mx-3 mb-6 align-center items-center">
-        <div className="w-full md:w-1/2 px-3 mb-6 md:mb-4">
-          <label
-            className="text-base text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-            htmlFor="image"
-          >
-            Choose an image:
-          </label>
-          <input
-            className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+
+      {/* Choose Image */}
+      <div className="mb-4">
+        <label 
+          className="text-base font-bold" 
+          htmlFor="image"
+        >
+          Choose an image:
+          <br />
+          <Input
             type="file"
             id="image"
             name="image"
             accept="image/*"
             onChange={handleImageChange}
+            disabled={uploadState.uploading || uploadState.uploaded}
           />
-        </div>
-        <div className="mb-4">
-          <label
-            className="text-base  text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-            htmlFor="name"
-          >
-            Name:
-          </label>
-          <input
-            className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            type="text"
-            id="name"
-            name="name"
-            value={name}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            className="text-base text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-            htmlFor="description"
-          >
-            Description:
-          </label>
-          <textarea
-            className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="description"
-            name="description"
-            value={description}
-            onChange={handleDescriptionChange}
-          />
-        </div>
+        </label>
       </div>
 
+
+      {/* Name */}
+      <div className="mb-4">
+        <label
+          className="text-base font-bold"
+        >
+        Name:
+        <Input
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleNameChange}
+          disabled={uploadState.uploading || uploadState.uploaded}
+        />
+        </label>
+      </div>
+
+
+      {/* Description */}
+      <div className="mb-4">
+        <label
+          className="text-base font-bold"
+        >
+          Description:
+        </label>
+        <Textarea
+          name="description"
+          value={description}
+          onChange={handleDescriptionChange}
+          disabled={uploadState.uploading || uploadState.uploaded}
+        />
+      </div>
+
+
+      {/* Upload NFT Button */}
       <div>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-600 focus:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50"
           onClick={handleUpload}
+          disabled={uploadState.uploading || uploadState.uploaded}
         >
-          Upload NFT
+          {uploadState.uploadButtonText}
         </button>
       </div>
-      <div className='mt-8 mb-0'>
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            width={300}
-            height={300}
-            alt="Picture of the author"
-          />
-        )}
-      </div>
-      {uploadResult && (
+
+
+      {/* Upload Result */}
+      {/* {uploadResult && (
         <div>
           <h2>Upload Result:</h2>
-          <pre>{JSON.stringify(uploadResult, null, 2)}</pre>
+          <pre className="text-">
+            {JSON.stringify(uploadResult, null, 2)}
+          </pre>
         </div>
-      )}
-    </div>
+      )} */}
+      {stuUri && 
+      <div className="m-3">
+        <p className="font-bold">tokenUri: </p>
+        <ScrollArea className="p-3 min-w-sm max-w-sm font-mono backdrop-blur rounded-lg border border-black bg-slate-200/50">
+          {stuUri}
+        </ScrollArea>
+      </div>
+      }
+
+      </div>
   );
 };
 
