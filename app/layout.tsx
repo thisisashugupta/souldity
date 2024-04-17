@@ -30,8 +30,9 @@ export default function RootLayout({
           <Web3Provider>
             <Navbar />
             <main className="min-h-screen min-w-screen flex flex-col items-center justify-start">
-              <div className="h-[4.5rem] w-full"/>
+              <div className="h-[4.5rem]"/>
               {children}
+              <div className="h-[2.465rem]"/>
             </main>
             <Footer />
           </Web3Provider>

@@ -1,227 +1,187 @@
 import React, { useState, useEffect } from 'react'
 import { abi } from '@/contracts/SBToken/SBToken.abi'
 import { HexString } from '@/types/basic'
-import { 
-  useAccount, 
-  useWriteContract, 
-  useSimulateContract, 
-  useWaitForTransactionReceipt 
-} from 'wagmi'
+import { useFunctionCall } from '@/hooks/useFunctionCall'
+import { Heading } from '@/components/ui/heading'
+import { Input } from '@/components/ui/input'
 
 export default function MintToken({uniTokenAddr, stuUri}: { uniTokenAddr: string, stuUri: string }) {
   
-  const [ stuEthAddress, setStuEthAddress ] = useState("");
-  const [ stuId, setStuId ] = useState("");
-  const [ stuName, setStuName ] = useState("");
-  const [ stuBranch, setStuBranch ] = useState("");
-  const [ stuBirthDate, setStuBirthDate ] = useState("");
-  const [ stuYearOfAdmission, setStuYearOfAdmission ] = useState("");
+  // INPUT FORM STATE
+  const [isAddressValid, setIsAddressValid] = useState<boolean>(true)
   
-  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false);
-  const [args, setArgs] = useState<any>([]);
+  // in this order
+  const [stuEthAddress, setStuEthAddress] = useState<HexString | null>(null)
+  // stuUri is passed as prop
+  const [stuId, setStuId] = useState<number>(0)
+  const [stuName, setStuName] = useState<string>("")
+  const [stuBranch, setStuBranch] = useState<string>("")
+  const [stuBirthDate, setStuBirthDate] = useState<number>(0)
+  const [stuYearOfAdmission, setStuYearOfAdmission] = useState<number>(0)
 
-  const [txnHash, setTxnHash] = useState<string | null>(null);
-  const [txnSuccess, setTxnSuccess] = useState<any>(null);
+/**
+ * function safeMint(
+        address to, 
+        string memory uri,
+        uint32 _stu_id,
+        string memory _stu_name,
+        string memory _stu_branch,
+        uint32 _stu_birthdate,
+        uint16 _stu_year_of_admission
+    ) public onlyOwner
+*/
 
-  const { chain, address } = useAccount();
+  const [args, setArgs] = useState<[HexString, string, number, string, string, number, number] | null>(null)
+  const [isReadyToSubmit, setIsReadyToSubmit] = useState<boolean>(false)
+  const [txLoading, setTxLoading] = useState<boolean>(false)
+  const [buttonMessage, setButtonMessage] = useState<string>('Create')
+  const [txnSuccess, setTxnSuccess] = useState<any>(null)
 
-  console.log("start");
 
 
+// TODO: ADD CODE FROM CREATE UNI PAGE
 
-  const { data, error: prepareError, isError: isPrepareError } = useSimulateContract({
-    address: uniTokenAddr as HexString,
-    abi,
-    functionName: 'safeMint',
-    chainId: chain?.id,
-    account: address,
-    args
-  });
-
-  console.log(data);
-  
-
-  const { writeContract } = useWriteContract();
+  console.log(args);
 
   const {
-    data: txnData,
-    isLoading: isContractLoading,
-    isSuccess: writeSuccess,
-  } = useWaitForTransactionReceipt({
-    hash: txnHash as `0x${string}`,
-    confirmations: 1
+    handleSubmit, 
+    isContractWaitLoading, 
+    isContractWaitSuccess, 
+    txnHash,
+    txnWaitData
+  } = useFunctionCall({
+    functionName: 'safeMint',
+    args: args as any[],
+    abi,
+    address: uniTokenAddr as HexString
   })
 
-// console.log(`data: ${txnData}, isLoading: ${isContractLoading}, isSuccess: ${writeSuccess}`);
-console.log(` Transaction: ${JSON.stringify(data)}`);
-console.log("end");
+  txnWaitData && console.log(txnWaitData);
+
+  useEffect(() => {
+    // check if stuEthAddress is valid
+    if (stuEthAddress && stuEthAddress.length === 42 && stuEthAddress.startsWith("0x")) {
+      // stuEthAddress is valid
+      !isAddressValid && setIsAddressValid(true)
+    } else {
+      // stuEthAddress is not valid
+      isAddressValid && setIsAddressValid(false)
+    }
+  }, [stuEthAddress])
   
   useEffect(() => {
-    setArgs([stuEthAddress, stuUri, stuId, stuName, stuBranch, stuBirthDate, stuYearOfAdmission]);
-    setIsReadyToSubmit(true);
-  }, [stuEthAddress, stuId, stuUri, stuName, stuBranch, stuBirthDate, stuYearOfAdmission]);
+    setArgs([stuEthAddress!, stuUri, stuId, stuName, stuBranch, stuBirthDate, stuYearOfAdmission])
+    setIsReadyToSubmit(true)
+  }, [stuEthAddress, stuId, stuUri, stuName, stuBranch, stuBirthDate, stuYearOfAdmission])
 
-  useEffect(() => {
-    if (writeSuccess) {
-        console.log(`Returned Data on write success`, data)
-        setTxnSuccess(`Success, Transaction submited successfully`);
-        console.log({
-            title: 'Success',
-            description: 'Transaction submited successfully',
-            status: 'success',
-            duration: 9000,
-            isClosable: true,
-        })
-    }
-   }, [writeSuccess, data]);
-
-  // global functions
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-        console.log(args)
-        writeContract(data!.request)
-    } catch (error) {
-        console.error(error);
-        console.log('There was an error while writing txn');
-    }
-  }
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   try {
+  //       console.log(args)
+  //       writeContract(data!.request)
+  //   } catch (error) {
+  //       console.log('There was an error while writing txn')
+  //       console.error(error)
+  //   }
+  // }
 
 
   return (
-    <div className="flex flex-col items-center justify-center p-12">
-        <div className="z-10 max-w-5xl w-full items-center justify-center font-mono text-sm lg:flex mb-10 md:mb-8">
-          <p className="text-3xl font-bold flex w-full justify-center p-5 dark:bg-zinc-800/30">
-            Mint Token To Students
-          </p>
-        </div>
+    <div className="flex flex-col items-center">
 
-        <div>
-          <div>
-            <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_eth_address"
-                  >
-                    student eth address
-                  </label>
-                </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+        <Heading>Enter Student Details</Heading>
+
+            <form onSubmit={handleSubmit}>
+
+              <div className="mb-4">
+                <label>
+                  {/* isAddressValid */}
+                  {!isAddressValid && <p className='text-red-500 font-bold'>Enter Valid ETH Address</p>}
+                  ETH Address:
+                  <Input
                     type="text"
                     name="student_eth_address"
-                    onChange={(e) => setStuEthAddress(e.target.value)}
+                    onChange={(e) => setStuEthAddress(e.target.value as HexString)}
+                    placeholder='0x0c093868DAC0514B99e4d4CfB0880ee5Fa5A711B'
                   />
-                </div>
+                </label>
               </div>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_id"
-                  >
-                    student id
-                  </label>
-                </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text"
+
+              <div className="mb-4">
+                <label>
+                  ID Number:
+                  <Input
+                    type="number"
                     name="student_id"
-                    onChange={(e) => setStuId(e.target.value)}
-                  />
-                </div>
+                    onChange={(e) => setStuId(Number(e.target.value))}
+                    placeholder='236'
+                    />
+                </label>
               </div>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_name"
-                  >
-                    student name
-                  </label>
-                </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+
+              <div className="mb-4">
+                <label>
+                  Name:
+                  <Input
                     type="text"
                     name="student_name"
                     onChange={(e) => setStuName(e.target.value)}
-                  />
-                </div>
+                    placeholder='John Doe'
+                    />
+                </label>
               </div>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_branch"
-                  >
-                    student branch
-                  </label>
-                </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+
+              <div className="mb-4">
+                <label>
+                  Branch:
+                  <Input
                     type="text"
                     name="student_branch"
                     onChange={(e) => setStuBranch(e.target.value)}
+                    placeholder='CSE'
                   />
-                </div>
+                </label>
               </div>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_birthdate"
-                  >
-                    student birthdate
-                  </label>
-                </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text"
+
+              <div className="mb-4">
+                <label>
+                  Date of Birth:
+                  <Input
+                    type="number"
                     name="student_birthdate"
-                    onChange={(e) => setStuBirthDate(e.target.value)}
+                    onChange={(e) => setStuBirthDate(Number(e.target.value))}
+                    placeholder='01012000'
+                    // TODO: add date picker
+                    // TODO: contract changes
+                    // TODO: add validation
                   />
-                </div>
+                </label>
               </div>
-              <div className="md:flex md:items-center gap-4 mb-4">
-                <div className="md:w-1/3">
-                  <label
-                    className="text-base block text-gray-600 font-bold md:text-right mb-1 md:mb-0 pr-4"
-                    htmlFor="student_year_of_admission"
-                  >
-                    student year of admission
+              
+                <div className="mb-4">
+                  <label>
+                    Year of Admission:
+                  <Input
+                    type="number"
+                    name="student_year_of_admission"
+                    onChange={(e) => setStuYearOfAdmission(Number(e.target.value))}
+                    placeholder='2020'
+                  />
                   </label>
                 </div>
-                <div className="md:w-2/3">
-                  <input
-                    className=" appearance-none border-2 border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text"
-                    name="student_year_of_admission"
-                    onChange={(e) => setStuYearOfAdmission(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="md:flex md:items-center">
-              <div className="md:w-1/3"></div>
-              <div className="md:w:2/3"><button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+
+              <div className='mb-4 text-center'>
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
                   type="submit"
                 >
                   safeMint
-                </button></div>
-                
+                </button>
               </div>
+
             </form>
-          </div>
-        </div>
-        <div>{txnSuccess && <>{`${txnSuccess}`}</>}</div>
-      </div>
+
+        {txnSuccess && <div>{`Success ?? ${txnSuccess}`}</div>}
+    </div>
   )
 }

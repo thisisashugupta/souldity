@@ -5,10 +5,11 @@ import MintToken from './MintToken'
 
 export default function UniPage({ uniTokenAddr }: { uniTokenAddr: string }) {
   
-    const [stuUri, setStuUri] = useState("");
+    const [stuUri, setStuUri] = useState<string>("");
+    // TODO: check if uni owner is connected, else show a message
   
     return (
-      <div className='w-screen'>
+      <div>
         <Heading>Mint your UniTokens to students</Heading>
         <div className="mb-6 py-4 text-sm text-center">
           <p>UniToken:</p>
