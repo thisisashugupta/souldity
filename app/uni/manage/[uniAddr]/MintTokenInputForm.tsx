@@ -7,7 +7,7 @@ type InputFormProps = {
     stuUri: string,
     isReadyToSubmit: boolean, 
     setIsReadyToSubmit: React.Dispatch<React.SetStateAction<boolean>>, 
-    setArgs: React.Dispatch<React.SetStateAction<any[]>>,
+    setArgs: React.Dispatch<React.SetStateAction<[`0x${string}`, string, number, string, string, number, number] | null>>,
     handleSubmit: (e: React.FormEvent) => void
 }
 
