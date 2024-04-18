@@ -1,9 +1,10 @@
 "use client"
 
 import React from 'react'
-import CreateUni from './CreateUni'
+import dynamic from 'next/dynamic'
 import { Heading } from '@/components/ui/heading'
 import { useAccount } from 'wagmi'
+const CreateUni = dynamic(() => import('./CreateUni'), { ssr: false, loading: () => <Heading>Loading...</Heading> })
 
 export default function Page() {
 

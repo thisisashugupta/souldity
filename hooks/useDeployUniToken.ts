@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react'
 import { HexString } from '@/types/basic'
 import SBTokenFactory from '@/contracts/SBTokenFactory/SBTokenFactory'
+import { abi } from '@/contracts/SBTokenFactory/abi'
 import { 
     useAccount, 
     useSimulateContract, 
@@ -10,7 +11,7 @@ import {
     useWaitForTransactionReceipt 
 } from 'wagmi'
 
-const factoryABI = SBTokenFactory.abi;
+const factoryABI = abi;
 const factoryContract = SBTokenFactory.networks[11155111].address as HexString;
 
 type UseDeployUniTokenProps = {

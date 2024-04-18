@@ -1,25 +1,45 @@
-"use client";
+"use client"
 
 import React from 'react'
+import dynamic from 'next/dynamic'
+import { isAddress } from 'viem'
 import { Heading } from '@/components/ui/heading'
 import { useAccount } from 'wagmi'
-import ManageUniPage from './UniPage'
+import useSBToken from '@/hooks/useSBToken'
+import { HexString } from '@/types/basic'
+
+const ManageUniPage = dynamic(() => import('./UniPage'), 
+{ 
+  ssr: false, 
+  loading: () => <Heading>Loading...</Heading> 
+})
 
 export default function Page({ params }: { params: { uniAddr: string } }) {
 
-  const uniAddr = params.uniAddr;
+  const uniAddr = params.uniAddr
+  const uni = useSBToken({address: uniAddr as HexString})
 
-  const { chain, isConnected, isDisconnected, isConnecting, isReconnecting } = useAccount();
+  const { 
+    address, 
+    chain, 
+    isConnected, 
+    isDisconnected, 
+    isConnecting, 
+    isReconnecting 
+  } = useAccount()
 
-  if (isDisconnected) return (<Heading>Connect your Wallet to Continue</Heading>);
-  if (isConnecting) return (<Heading>Connecting...</Heading>);
-  if (isReconnecting) return (<Heading>Trying to Reconnect...</Heading>);
+  if (!isAddress(uniAddr)) return (<Heading>{`Invalid Address: ${uniAddr}`}</Heading>)
 
-  if (chain?.id !== 11155111) return (<Heading>Connect to Sepolia Testnet</Heading>);
+  console.log('uni', uni)
+  if (!uni) return (<Heading>Fetching Uni...</Heading>)
 
-  // TODO
-  // CHECK IF ADDRESS IS VALID ADDRESS
-  // IF NOT THEN SHOW A MESSAGE
+  if (isDisconnected) return (<Heading>Connect your Wallet to Continue</Heading>)
+  if (isConnecting) return (<Heading>Connecting...</Heading>)
+  if (isReconnecting) return (<Heading>Trying to Reconnect...</Heading>)
 
-  return (isConnected && <ManageUniPage uniTokenAddr={uniAddr} />);
-};
+  if (chain?.id !== 11155111) return (<Heading>Connect to Sepolia Testnet</Heading>)
+
+  if (address !== uni?.uni_owner) return (<Heading>You are not the Owner of this Uni</Heading>)
+
+  return (isConnected && <ManageUniPage uni={uni} uniTokenAddr={uniAddr} />)
+}

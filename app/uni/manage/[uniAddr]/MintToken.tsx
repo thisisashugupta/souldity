@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { abi } from '@/contracts/SBToken/SBToken.abi'
+import { abi } from '@/contracts/SBToken/abi'
 import { HexString } from '@/types/basic'
 import { useFunctionCall } from '@/hooks/useFunctionCall'
 import { Heading } from '@/components/ui/heading'

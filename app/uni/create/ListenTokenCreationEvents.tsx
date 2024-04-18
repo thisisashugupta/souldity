@@ -6,7 +6,7 @@ import toast from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 
 import SBTokenFactory from '@/contracts/SBTokenFactory/SBTokenFactory'
-const abi = SBTokenFactory.abi;
+import { abi } from '@/contracts/SBTokenFactory/abi'
 const address = SBTokenFactory.networks[11155111].address as HexString;
 
 function ListenTokenCreationEvents() {

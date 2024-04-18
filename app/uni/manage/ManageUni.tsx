@@ -1,13 +1,13 @@
 "use client"
 
 import React, { useState, useEffect } from 'react'
-import SBTokenFactory from '@/contracts/SBTokenFactory/SBTokenFactory'
+import { abi } from '@/contracts/SBTokenFactory/abi'
 import { useReadContract } from 'wagmi'
 import { redirect } from 'next/navigation'
 import { HexString } from '@/types/basic'
 import { Heading } from '@/components/ui/heading'
 
-const factoryABI = SBTokenFactory.abi;
+const factoryABI = abi;
 const factoryContract = '0x2DDE1632f75258329877c29398Ba29331d6a42C4' as HexString;
 // SBTokenFactory.networks[11155111].address as HexString;
 // 0x2DDE1632f75258329877c29398Ba29331d6a42C4
