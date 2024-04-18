@@ -60,10 +60,9 @@ export default function MintTokenInputForm({
   }, [isAddressValid, stuEthAddress, stuId, stuUri, stuName, stuBranch, stuBirthDate, stuYearOfAdmission])
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
 
         {/* ETH Address */}
-
         <div className="mb-4">
         <label>
             {/* isAddressValid */}
@@ -144,15 +143,6 @@ export default function MintTokenInputForm({
                 placeholder='2020'
             />
         </label>
-        </div>
-
-        <div className='mb-4 text-center'>
-        <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg"
-            type="submit"
-        >
-            safeMint
-        </button>
         </div>
 
     </form>
